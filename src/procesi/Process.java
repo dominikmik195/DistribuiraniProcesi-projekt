@@ -1,6 +1,7 @@
 package procesi;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -8,19 +9,21 @@ import java.util.LinkedList;
  * 
  */
 public class Process implements Runnable{
-    Leader leaderProcess;
+    public Leader leaderProcess;
+    RoundMessage status;
     int ID;
     int length;
     int parent;
     int numberOfProcesses;
     ArrayList<Process> Neighbours = new ArrayList<>();
-    HashMap<Integer, Integer> weights = new HashMap<>();
-    LinkedList<Message> messages = new LinkedList<>();
+    volatile public HashMap<Integer, Integer> weights = new HashMap<>();
+    volatile LinkedList<Message> messages = new LinkedList<>();
     
     public Process(int _ID) {
         this.length = Integer.MAX_VALUE;
         this.parent = Integer.MIN_VALUE;
         this.ID = _ID;
+        status = new RoundMessage("");
     }
     
     public Process(int _ID, HashMap<Integer, Integer> _toThis, Leader _leaderProcess, int sourceID) {
@@ -28,12 +31,6 @@ public class Process implements Runnable{
         this.parent = Integer.MIN_VALUE;
         this.ID = _ID;
         if(ID == sourceID) length = 0;
-    }
-    
-    public void UPDATE() {
-        for(int round = 0; round < numberOfProcesses; round++) {
-            
-        }
     }
     
     public void setUpNeighbours(Process[] _neighbours) {
@@ -47,7 +44,7 @@ public class Process implements Runnable{
         }
     }
     
-    public void updateMessages(Message msg) {
+    public synchronized void updateMessages(Message msg) {
         messages.add(msg);
     }
     
@@ -71,6 +68,24 @@ public class Process implements Runnable{
     }
     
     @Override public void run() {
-        
+        while(!leaderProcess.pathFound) {
+            if(status.getStatus().equals("Round")) {
+                informNeighbours();
+                status = new RoundMessage("");
+                leaderProcess.roundOver(ID);
+            }
+        }
+        System.out.println("Over at " + ID);
+    }
+    
+    @Override public String toString() {
+        String result = "Process with ID: " + ID + "\n\n";
+        result += "Current messages:\n";
+        for(Iterator<Message> it = messages.iterator(); it.hasNext();) {
+            result += it.next();     
+        }
+        result += "\nCurrent status:\n" + status + "\n\n";
+        result += "Length: " + length + "\n\n";
+        return result;
     }
 }

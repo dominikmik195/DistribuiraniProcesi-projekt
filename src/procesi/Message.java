@@ -36,4 +36,9 @@ public class Message {
     public int getLength() {
         return length;
     }
+    
+    @Override public String toString() {
+        return "Message from process with ID " + ID + "\n"
+                + "Current length: " + length + "\n";
+    }
 }
