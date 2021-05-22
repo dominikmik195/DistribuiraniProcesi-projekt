@@ -2,11 +2,12 @@ package procesi;
 
 /**
  * Class which represents messages exchanged between processes.
+ * Contains the ID of the process which is sending the message and current length of the path from the node represented by the process to the source.
  * 
  */
 public class Message {
-    private int ID;
-    private int length;
+    int ID;
+    int length;
     
     /**
      * Constructor which creates a message specifiyng the ID of the process and current length.
@@ -37,6 +38,10 @@ public class Message {
         return length;
     }
     
+    /**
+     *  Function which converts this message into a string.
+     * @return string representation of the message
+     */
     @Override public String toString() {
         return "Message from process with ID " + ID + "\n"
                 + "Current length: " + length + "\n";
