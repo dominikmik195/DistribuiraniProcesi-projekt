@@ -9,7 +9,6 @@ public class Graph {
     String path;
     int numberOfNodes;
     Process[] processes;
-    int source;
     
     public Graph(String _path) {
         path = _path;
@@ -19,15 +18,10 @@ public class Graph {
         File file = new File(path);
         Scanner scanner = new Scanner(file);
         weights = new ArrayList<>();
-        boolean first = true;
+
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
             line = line.strip();
-            if(first) {
-                source = Integer.parseInt(line);
-                first = false;
-                continue;
-            }
             ArrayList<Integer> row = new ArrayList<>();
             String[] numbers = line.split(" ");
             for(String n : numbers) {
